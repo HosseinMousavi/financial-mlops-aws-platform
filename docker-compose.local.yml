@@ -1,0 +1,47 @@
+services:
+  mlflow:
+    image: python:3.11-slim
+    container_name: financial-mlflow
+    command: bash -lc "pip install mlflow==2.15.1 && mlflow server --host 0.0.0.0 --port 5001 --backend-store-uri sqlite:////mlflow/mlflow.db --serve-artifacts --artifacts-destination /mlflow-artifacts"
+    ports:
+      - "5001:5001"
+    volumes:
+      - ./mlruns:/mlflow-artifacts
+      - ./mlflow_db:/mlflow
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5001').read()"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.serve
+    container_name: financial-api
+    ports:
+      - "8001:8000"
+    environment:
+      - MLFLOW_TRACKING_URI=http://mlflow:5001
+    volumes:
+      - .:/app
+    depends_on:
+      mlflow:
+        condition: service_healthy
+
+  airflow:
+    image: apache/airflow:2.9.3-python3.11
+    container_name: financial-airflow
+    environment:
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - AIRFLOW__CORE__EXECUTOR=SequentialExecutor
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=sqlite:////opt/airflow/airflow.db
+      - MLFLOW_TRACKING_URI=http://mlflow:5001
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./orchestration/airflow/dags:/opt/airflow/dags
+      - .:/opt/airflow/project
+    command: bash -lc "pip install -r /opt/airflow/project/requirements.txt && airflow db migrate && airflow users create --username admin --password admin --firstname Admin --lastname User --role Admin --email admin@example.com || true && airflow standalone"
+    depends_on:
+      - mlflow

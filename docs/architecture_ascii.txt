@@ -1,0 +1,5 @@
+Binance API -> Airflow -> Docker Training -> MLflow + S3 Artifacts -> ECS FastAPI / SageMaker Endpoint
+                         -> DVC Data Versioning
+                         -> Evidently Drift -> CloudWatch
+Terraform provisions: VPC, IAM, S3, ECR, EC2, ECS, SageMaker, CloudWatch
+GitHub Actions: validate, build Docker images, push to ECR, terraform apply

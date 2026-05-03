@@ -1,0 +1,36 @@
+name: Deploy to AWS
+
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  terraform-and-push:
+    runs-on: ubuntu-latest
+    env:
+      AWS_REGION: us-east-1
+    steps:
+      - uses: actions/checkout@v4
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+      - uses: hashicorp/setup-terraform@v3
+      - name: Terraform init/plan/apply
+        working-directory: infra/terraform
+        run: |
+          terraform init
+          terraform validate
+          terraform plan -var-file=dev.tfvars
+          terraform apply -auto-approve -var-file=dev.tfvars
+      - name: Login to ECR
+        uses: aws-actions/amazon-ecr-login@v2
+      - name: Build and push serving image
+        run: |
+          ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+          ECR_URI="$ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/financial-mlops-api:latest"
+          docker build -f docker/Dockerfile.serve -t "$ECR_URI" .
+          docker push "$ECR_URI"

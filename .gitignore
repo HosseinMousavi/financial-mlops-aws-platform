@@ -1,0 +1,28 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+.DS_Store
+.mlflow/
+mlruns/
+data/raw/*.csv
+data/processed/*.csv
+models/*.joblib
+reports/*.html
+reports/*.json
+infra/terraform/.terraform/
+infra/terraform/.terraform.lock.hcl
+infra/terraform/terraform.tfstate*
+
+# MLflow DB
+mlflow.db
+mlflow_db/
+
+# R
+.Rhistory
+
+# Office temp files
+~$*.docx
+
+# Terraform backups
+*.tfstate.backup
