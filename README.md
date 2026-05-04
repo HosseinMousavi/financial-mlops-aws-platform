@@ -44,12 +44,38 @@ financial_mlops_aws_platform/
 
 ## Screenshots
 
-### Local MLOps stack
+### Airflow orchestration
 
-- Airflow DAG orchestration
-- MLflow experiment tracking
-- FastAPI prediction endpoint
-- Evidently monitoring report
+![Airflow Pipeline](docs/images/airflow_pipeline.png)
+
+### MLflow experiment tracking
+
+![MLflow](docs/images/mlflow_tracking.png)
+
+### FastAPI inference endpoint
+
+![FastAPI](docs/images/fastapi_inference.png)
+
+### Evidently drift monitoring
+
+![Evidently](docs/images/evidently_monitoring.png)
+
+### GitHub Actions CI
+
+![GitHub Actions](docs/images/github_actions_ci.png)
+
+### AWS S3 storage buckets
+
+![S3](docs/images/aws_s3.png)
+
+### Amazon ECR repositories
+
+![ECR](docs/images/aws_ecr.png)
+
+### CloudWatch monitoring alarm
+
+![CloudWatch](docs/images/cloudwatch_alarm.png)
+
 
 ## Start here
 
