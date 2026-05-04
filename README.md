@@ -42,6 +42,15 @@ financial_mlops_aws_platform/
 └── Makefile                      # common commands
 ```
 
+## Screenshots
+
+### Local MLOps stack
+
+- Airflow DAG orchestration
+- MLflow experiment tracking
+- FastAPI prediction endpoint
+- Evidently monitoring report
+
 ## Start here
 
 Read:
