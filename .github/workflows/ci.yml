@@ -33,6 +33,10 @@ jobs:
           print("imports ok")
           PY
 
+      - name: Run data ingestion
+        run: |
+          PYTHONPATH=. python src/data_ingestion.py
+
       - name: Run feature engineering
         run: |
           PYTHONPATH=. python src/feature_engineering.py
